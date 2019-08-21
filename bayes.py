@@ -1,4 +1,5 @@
 import pandas as pd
+import xlrd as xl
 
 britons = pd.ExcelFile('britons.xlsx').parse()
 probs = britons.groupby('Nacionalidad').mean()
