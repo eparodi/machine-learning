@@ -1,3 +1,5 @@
+from pandas import DataFrame
+
 class NaiveBayes():
     
     def __init__(self, probs, class_probs):
@@ -5,8 +7,18 @@ class NaiveBayes():
         self.class_probs = class_probs
 
     @staticmethod
-    def from_data_frame(data_frame, class_col):
-        probs = data_frame.groupby(class_col).mean()
+    def __apply_laplace_correction(data_frame: DataFrame, class_col: str):
+        data_frame = data_frame.groupby(class_col)
+        check_zero = data_frame.sum().eq(0).any().any()
+        if check_zero:
+            sum_frame = data_frame.sum()
+            return (sum_frame + 1) / (data_frame.count() + sum_frame.count())
+        else:
+            return data_frame.mean()
+
+    @staticmethod
+    def from_data_frame(data_frame: DataFrame, class_col: str):
+        probs = NaiveBayes.__apply_laplace_correction(data_frame, class_col)
         probs = probs.to_dict()
 
         class_probs = data_frame.groupby(class_col).agg({class_col: ['count']})

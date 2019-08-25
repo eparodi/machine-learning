@@ -1,7 +1,9 @@
+from naive_bayes import NaiveBayes
+from collections import Counter
+
 import pandas as pd
 import xlrd as xl
 import re
-from collections import Counter
 
 blackListedWords = ["de", "la", "en", "el", "que", "y", "los", "un", "del", "al", "fue", "es", "lo"
                     "con", "para", "se", "una", "su", "a", "más", "por", "las", "no", "le", "con",
@@ -39,32 +41,16 @@ for itup in wordCountAttrs:
 
 attributes['titular'] = titular
 
-britons = pd.read_csv('news.tsv', sep='\t', header=0)
+news = pd.read_csv('news.tsv', sep='\t', header=0)
+news = news.drop('fuente', axis=1).drop('fecha', axis=1)
 exampleAttrs = {'categoria': ['count'], 'titular' : {"dolar": lambda x: MakeList(x, "dolar"),  "BRCA": lambda x: MakeList(x, "BRCA")}}
-print(britons)
-print(attributes)
-probs = britons.groupby('categoria').agg(attributes)
-print(probs)
+for title in wordCountAttrs:
+    news[title] = news.titular.str.count(title, flags=re.IGNORECASE)
 
-# probs_britons = britons.groupby('Nacionalidad').agg({'Nacionalidad': ['count']})
-# probs_britons = probs_britons.div(probs_britons.sum())
-#
-# probs = probs.to_dict()
-# probs_britons = probs_britons.to_dict()
-# probs_britons = probs_britons[list(probs_britons.keys())[0]]
-#
-# inp = (1, 0, 1, 1, 0)
-# keys = list(probs.keys())
-#
-# for _cls in probs_britons.keys():
-#     prob = 1
-#     for x in range(len(keys)):
-#         i_value = inp[x]
-#         key = keys[x]
-#         if i_value:
-#             prob *= probs[key][_cls]
-#         else:
-#             prob *= (1 - probs[key][_cls])
-#     prob *= probs_britons[_cls]
-#     print("{_cls}: {prob}".format(_cls=_cls, prob=prob))
+news = news.drop('titular', axis=1)
+bayes = NaiveBayes.from_data_frame(news, 'categoria')
 
+title = 'Google sube el dolar contra Trump'
+
+inp = [1 if word.upper() in title.upper() else 0 for word in wordCountAttrs]
+print(bayes.get_probabilities(inp))

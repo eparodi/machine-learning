@@ -9,6 +9,8 @@ autopep8 = "*"
 [packages]
 pandas = "*"
 xlrd = "*"
+ipython = "*"
+ipdb = "*"
 
 [requires]
 python_version = "3.7"
