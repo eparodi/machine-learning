@@ -27,3 +27,4 @@ class_probs = {
 inp = (1, 0, 1, 0)
 bayes = NaiveBayes(probs, class_probs)
 print(bayes.get_probabilities(inp))
+
