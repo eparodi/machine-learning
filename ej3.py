@@ -15,13 +15,19 @@ manualAttributes = ["Google", "WhatsApp", "nuevo", "River", "Boca", "final", "Sa
 allNews = pd.read_csv('news.tsv', sep='\t', header=0)
 allNews = allNews.drop('fuente', axis=1).drop('fecha', axis=1)
 allNews = allNews[allNews.categoria!='Noticias destacadas']
+# allNews = allNews[allNews.categoria!='Nacional']
+# allNews = allNews[allNews.categoria!='Internacional']
+
+allCategories = []
+for category in allNews.groupby('categoria').nunique().itertuples():
+    allCategories.append(category[0])
 
 training, test = exp.random_with_replacement_split(0.8, allNews)
 print('Training size:'+ str(len(training)))
 print('Test size:'+ str(len(test)))
 print('Total size:'+ str(len(allNews)))
 
-mostCommonAmount = 7
+mostCommonAmount = 4
 autoDetectedAttrs = attrs.buildNMostCommonWordsByCategory(training, 'categoria', mostCommonAmount)
 print("Detecting the " + str(mostCommonAmount) + " most common words for each category")
 usedAttrs = autoDetectedAttrs
@@ -37,30 +43,20 @@ truePositive = 0
 trueNegative = 0
 total = 0
 
-actualCategory = []
-guessedCategory = []
+confusion = pd.DataFrame(data=0, index=allCategories, columns=allCategories)
 
 for asd in test.itertuples():
     inp = [1 if word.lower() in asd.titular.lower() else 0 for word in usedAttrs]
-    # print(asd)
-    # print(inp)
     result = bayes.get_probabilities(inp)
     total+=1
     guessed = exp.maxDictItem(result)
-    actualCategory.append(asd.categoria)
-    guessedCategory.append(guessedCategory)
+    confusion.loc[asd.categoria, guessed] = int(confusion.loc[asd.categoria, guessed]) + 1
 
     if(guessed == asd.categoria):
-        # print("Correctly guessed!")
         truePositive+=1
     else:
-        # print("Mistaken")
         trueNegative+=1
 
-
-y_actu = pd.Series(actualCategory, name='Actual Category')
-y_pred = pd.Series(guessedCategory, name='Predicted Category')
-df_confusion = pd.crosstab(y_actu, y_pred)
+print(confusion)
 
 print(truePositive/total)
-print(df_confusion)
