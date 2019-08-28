@@ -32,13 +32,6 @@ class BayesianNetwork:
     def __generate_tables(reversed_graph: dict, data_frame: DataFrame):
         tables = dict()
         for key in reversed_graph.keys():
-            # if len(reversed_graph[key]) != 1:
-            #     tables[key] = data_frame.groupby(
-            #         list(reversed_graph[key])).mean()[key].to_dict()
-            # else:
-            # tables[key] = data_frame.groupby(key).agg({key: ['count']})
-            # tables[key] = tables[key].div(tables[key].sum()).to_dict()[
-            #     list(tables[key].keys())[0]]
             columns = list(reversed_graph[key])
             tables[key] = data_frame.groupby(columns).agg({key: ['count']})
             tables[key] = tables[key].div(tables[key].sum()).to_dict()[
@@ -69,4 +62,41 @@ class BayesianNetwork:
                 result *= self.tables[key][table_key]
         return result
 
+    def calculate_event_probability(self, key, value):
+        keys = self.reversed_graph[key]
+        probs = self.tables[key]
+        index = list(keys).index(key)
+        fprob = 0
+        if len(self.reversed_graph[key]) > 1:
+            for prob in probs.keys():
+                if prob[index] == value:
+                    fprob += probs[prob]
+        else:
+            fprob += probs[value]
+        return fprob
 
+    def __calculate_joint_probability(self, inp):
+        of_key, of_value = inp['of']
+        if_key, if_value = inp['if']
+        if (not if_key in self.reversed_graph[of_key] and
+            not of_key in self.reversed_graph[if_key]):
+            return (self.calculate_event_probability(of_key, of_value) *
+                self.calculate_event_probability(if_key, if_value))
+        if if_key in self.reversed_graph[of_key]:
+            probs = self.tables[of_key]
+            keys = list(self.reversed_graph[of_key])
+        else:
+            probs = self.tables[if_key]
+            keys = list(self.reversed_graph[if_key])
+        if_index = keys.index(if_key)
+        of_index = keys.index(of_key)
+        fprob = 0
+        for prob in probs.keys():
+            if prob[if_index] == if_value and prob[of_index] == of_value:
+                fprob += probs[prob]
+        return fprob
+
+    def calculate_conditional_probability(self, inp):
+        if_prob = self.calculate_event_probability(inp['of'][0], inp['of'][1])
+        joint_prob = self.__calculate_joint_probability(inp)
+        return joint_prob / if_prob
