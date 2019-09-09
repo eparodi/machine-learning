@@ -2,18 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="350491a1-27e7-4d49-84b6-e93a41c8eafb" name="Default" comment="Added metrics and removed more categories, it works at 70% more or less now">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/TP2/ej1.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/tree.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/treeTest.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/attribute_builder.py" afterPath="$PROJECT_DIR$/common/attribute_builder.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/bayesian_network.py" afterPath="$PROJECT_DIR$/common/bayesian_network.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/ej1.py" afterPath="$PROJECT_DIR$/TP1/ej1.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/ej2.py" afterPath="$PROJECT_DIR$/TP1/ej2.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/ej3.py" afterPath="$PROJECT_DIR$/TP1/ej3.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/ej4.py" afterPath="$PROJECT_DIR$/TP1/ej4.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/experiment_builder.py" afterPath="$PROJECT_DIR$/common/experiment_builder.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/naive_bayes.py" afterPath="$PROJECT_DIR$/common/naive_bayes.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/news.py" afterPath="$PROJECT_DIR$/TP1/news.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/information.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/TP2/ej1.py" afterPath="$PROJECT_DIR$/TP2/ej1.py" />
     </list>
     <ignored path=".idea/machine-learning.iml" />
     <ignored path=".idea/misc.xml" />
@@ -31,10 +21,22 @@
       <file leaf-file-name="ej1.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/TP2/ej1.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="64" column="11" lean-forward="false" selection-start-line="64" selection-start-column="11" selection-end-line="64" selection-end-column="11" />
+            <state relative-caret-position="166">
+              <caret line="28" column="92" lean-forward="false" selection-start-line="28" selection-start-column="92" selection-end-line="28" selection-end-column="92" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="information.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common/information.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="25" column="0" lean-forward="true" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#16#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -94,6 +96,7 @@
       <find>Cambiante</find>
       <find>Cálida</find>
       <find>agg</find>
+      <find>print</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -123,6 +126,7 @@
         <option value="$PROJECT_DIR$/common/treeTest.py" />
         <option value="$PROJECT_DIR$/common/tree.py" />
         <option value="$PROJECT_DIR$/TP2/ej1.py" />
+        <option value="$PROJECT_DIR$/common/information.py" />
       </list>
     </option>
   </component>
@@ -373,7 +377,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.329602" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5136816" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.38557214" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32889965" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -417,7 +421,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/TP2/ej1.py</url>
-          <line>49</line>
+          <line>24</line>
           <option name="timeStamp" value="33" />
         </line-breakpoint>
       </breakpoints>
@@ -433,14 +437,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file:///usr/local/Cellar/python/3.6.5/Frameworks/Python.framework/Versions/3.6/lib/python3.6/collections/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7725">
-          <caret line="516" column="8" lean-forward="false" selection-start-line="516" selection-start-column="8" selection-end-line="516" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/TP1/ej3.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="495">
@@ -804,10 +800,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/common/information.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="25" column="0" lean-forward="true" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#16#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/TP2/ej1.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="64" column="11" lean-forward="false" selection-start-line="64" selection-start-column="11" selection-end-line="64" selection-end-column="11" />
+        <state relative-caret-position="166">
+          <caret line="28" column="92" lean-forward="false" selection-start-line="28" selection-start-column="92" selection-end-line="28" selection-end-column="92" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
