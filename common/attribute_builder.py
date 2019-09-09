@@ -3,7 +3,8 @@ from collections import Counter
 
 blackListedWords = ["de", "la", "en", "el", "que", "y", "los", "un", "del", "al", "fue", "es", "san"
                     "con", "para", "se", "una", "su", "a", "más", "por", "las", "no", "le", "con", "porque", "casi", "desde"
-                    , "|", "tras", "sobre", "sus", "qué", "son", "entre", "pero", "hay", "ya", "como", "desde", "hasta", "me", "lo", "san", "tu", "tus", "cómo"]
+                    , "|", "tras", "sobre", "sus", "qué", "son", "entre", "pero", "hay", "ya", "como", "desde", "hasta", "me",
+                    "lo", "tu", "tus", "cómo"]
 
 def buildWordFrequencyAttr(str):
     return lambda x: MakeList(x, str)
@@ -24,7 +25,7 @@ def ConcatTitles(x):
 
 def CountFrequencies(str, amount):
     cleanStr = str.lower().split(" ")
-    return Counter(x for x in cleanStr if x not in blackListedWords).most_common(amount)
+    return Counter(x for x in cleanStr).most_common(amount)
 
 def GetExampleAttrs():
     return  {'categoria': ['count'], 'titular' : {"dolar": lambda x: MakeList(x, "dolar"),  "BRCA": lambda x: MakeList(x, "BRCA")}}

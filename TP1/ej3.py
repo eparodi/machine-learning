@@ -1,10 +1,9 @@
-from naive_bayes import NaiveBayes
-
-import math
-import attribute_builder as attrs
-import pandas as pd
 import re
-import experiment_builder as exp
+
+import pandas as pd
+
+from common import attribute_builder as attrs, experiment_builder as exp
+from common.naive_bayes import NaiveBayes
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.expand_frame_repr', False)
@@ -13,7 +12,7 @@ pd.set_option('max_colwidth', -1)
 manualAttributes = ["Google", "WhatsApp", "nuevo", "River", "Boca", "final", "San", "contra", "Gobierno", "dólar", "millones", "baja",
                   "Pérez", "Sol", "foto", "contra", "Trump", "príncipe", "mujer", "años", "cáncer", "VIH", "sarampión"]
 
-allNews = pd.read_csv('news.tsv', sep='\t', header=0)
+allNews = pd.read_csv('datasets/news.tsv', sep='\t', header=0)
 allNews = allNews.drop('fuente', axis=1).drop('fecha', axis=1)
 allNews = allNews[allNews.categoria!='Noticias destacadas']
 allNews = allNews[allNews.categoria!='Nacional']
@@ -26,13 +25,13 @@ allCategories = []
 for category in allNews.groupby('categoria').nunique().itertuples():
     allCategories.append(category[0])
 
-training, test = exp.random_with_replacement_split(0.3, allNews)
+training, test = exp.random_with_replacement_split(0.8, allNews)
 # training, test = (allNews.copy(), allNews.copy())
 print('Training size:'+ str(len(training)))
 print('Test size:'+ str(len(test)))
 print('Total size:'+ str(len(allNews)))
 
-mostCommonAmount = 25
+mostCommonAmount = 100
 autoDetectedAttrs = attrs.buildNMostCommonWordsByCategory(training, 'categoria', mostCommonAmount)
 print("Detecting the " + str(mostCommonAmount) + " most common words for each category")
 usedAttrs = autoDetectedAttrs
@@ -63,13 +62,13 @@ for row in test.itertuples():
     guessed = exp.maxDictItem(result)
     categoria = row.categoria
     # print(confusion)
+    print()
     try:
         oldValue = confusion.loc[categoria, guessed]
         confusion.loc[categoria, guessed] = int(oldValue) + 1
-
     except KeyError:
         print("ERROR!")
-        print(row)
+        # print(row)
 
     addOneToDataframe(metrics, categoria, "Total")
     if(guessed == row.categoria):
@@ -80,12 +79,11 @@ for row in test.itertuples():
 confusion.loc['Column_Total']= confusion.sum(numeric_only=True, axis=0)
 confusion.loc[:,'Row_Total'] = confusion.sum(numeric_only=True, axis=1)
 
-
 for category in allCategories:
     metrics.loc[category,"FalsePositives"] = confusion.loc["Column_Total", category] - confusion.loc[category, category]
     metrics.loc[category,"TruePositives"] = confusion.loc[category, category]
     metrics.loc[category,"FalseNegatives"] = confusion.loc[category, "Row_Total"] - confusion.loc[category, category]
-    metrics.loc[category,"TrueNegatives"] = confusion.loc["Column_Total", "Row_Total"] - confusion.loc[category, "Row_Total"]
+    metrics.loc[category,"TrueNegatives"] = confusion.loc["Column_Total", "Row_Total"] + confusion.loc[category, category] -confusion.loc["Column_Total", category] - confusion.loc[category, "Row_Total"]
 
 metrics["Accuracy"] = (metrics["TruePositives"] + metrics["TrueNegatives"])/confusion.loc["Column_Total", "Row_Total"]
 metrics["Precision"] = metrics["TruePositives"] / (metrics["TruePositives"] + metrics["FalsePositives"])

@@ -1,4 +1,4 @@
-from naive_bayes import NaiveBayes
+from common.naive_bayes import NaiveBayes
 
 probs = {
     'P1': {
@@ -26,5 +26,9 @@ class_probs = {
 
 inp = (1, 0, 1, 0)
 bayes = NaiveBayes(probs, class_probs)
-print(bayes.get_probabilities(inp))
+prob = bayes.get_probabilities(inp)
+print(prob)
 
+probConjunta = prob["Jóvenes"] + prob["Viejos"]
+probDatos = prob["Jóvenes"] / probConjunta
+print(probDatos)

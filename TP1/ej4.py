@@ -1,6 +1,6 @@
-from bayesian_network import BayesianNetwork
-
 import pandas as pd
+
+from common.bayesian_network import BayesianNetwork
 
 data = pd.read_csv('binary.csv', sep=',', header=0)
 data['gre'] = data['gre'].ge(500)

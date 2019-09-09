@@ -1,9 +1,9 @@
-from naive_bayes import NaiveBayes
+import re
 from collections import Counter
 
 import pandas as pd
-import xlrd as xl
-import re
+
+from common.naive_bayes import NaiveBayes
 
 blackListedWords = ["de", "la", "en", "el", "que", "y", "los", "un", "del", "al", "fue", "es", "lo"
                     "con", "para", "se", "una", "su", "a", "más", "por", "las", "no", "le", "con",
@@ -41,7 +41,7 @@ for itup in wordCountAttrs:
 
 attributes['titular'] = titular
 
-news = pd.read_csv('news.tsv', sep='\t', header=0)
+news = pd.read_csv('datasets/news.tsv', sep='\t', header=0)
 news = news.drop('fuente', axis=1).drop('fecha', axis=1)
 exampleAttrs = {'categoria': ['count'], 'titular' : {"dolar": lambda x: MakeList(x, "dolar"),  "BRCA": lambda x: MakeList(x, "BRCA")}}
 for title in wordCountAttrs:

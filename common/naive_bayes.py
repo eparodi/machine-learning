@@ -19,12 +19,14 @@ class NaiveBayes():
     @staticmethod
     def from_data_frame(data_frame: DataFrame, class_col: str):
         probs = NaiveBayes.apply_laplace_correction(data_frame, class_col)
+        print(probs)
         probs = probs.to_dict()
 
         class_probs = data_frame.groupby(class_col).agg({class_col: ['count']})
         class_probs = class_probs.div(class_probs.sum())
         class_probs = class_probs.to_dict()
         class_probs = class_probs[list(class_probs.keys())[0]]
+        print(class_probs)
         return NaiveBayes(probs, class_probs)
 
     def get_probabilities(self, _input):
