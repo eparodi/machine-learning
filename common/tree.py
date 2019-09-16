@@ -3,10 +3,10 @@ from typing import List
 
 class Tree():
     def __init__(self, value, leafs=()):
-        self.value= value
-        if(isinstance(leafs, tuple) or isinstance(leafs, list)):
+        self.value = value
+        if isinstance(leafs, tuple) or isinstance(leafs, list):
             for leaf in leafs:
-                if(not isinstance(leaf, Tree)):
+                if not isinstance(leaf, Tree):
                     raise AssertionError("Not a list leaf!: " + str(leafs.__class__))
             self.leafs = leafs
         elif isinstance(leafs, Tree):
@@ -33,3 +33,12 @@ class Tree():
 
     def __str__(self):
         return self.showTabbed("")
+
+    def bottomLeafValues(self):
+        values = []
+        if len(self.leafs) == 0:
+            values = [self.value]
+        else:
+            for leaf in self.leafs:
+                values.extend(leaf.bottomLeafValues())
+        return values
