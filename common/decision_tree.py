@@ -5,8 +5,7 @@ from common.tree import Tree
 from common.information import inf_gain
 
 
-class DecisionTree():
-
+class DecisionTree:
     def __init__(self,  data_frame: pd.DataFrame, categories, class_col, min_samples=5):
         self.data_frame = data_frame.copy()
         self.categories = categories.copy()

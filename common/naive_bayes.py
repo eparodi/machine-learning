@@ -26,7 +26,6 @@ class NaiveBayes():
         class_probs = class_probs.div(class_probs.sum())
         class_probs = class_probs.to_dict()
         class_probs = class_probs[list(class_probs.keys())[0]]
-        print(class_probs)
         return NaiveBayes(probs, class_probs)
 
     def get_probabilities(self, _input):

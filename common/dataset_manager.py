@@ -4,12 +4,16 @@ import pandas as pd
 
 dataset_folder_path = "../datasets/"
 
-class Dataset():
+
+class Dataset:
     class Type(Enum):
         EXCEL = 1
         TSV = 2
         CSV = 3
 
+
+    # Hacer que transforme las variables categoricas en numericas
+    # Hacer que agrupe los valores en cada atributo y les asigne un numero de orden
     def __init__(self, dataset_path, clazz_attr, blacklisted_attrs, dataset_type, attr_generators = ()):
         assert isinstance(dataset_path, str), "dataset_path not a str!: " + str(dataset_path.__class__)
         self.dataset_path = dataset_path
@@ -23,6 +27,7 @@ class Dataset():
         self.all_attributes = list(self.all_rows)
         self.attributes_with_clazz = Dataset.loadFilteredAttrs(self.all_attributes, self.blacklisted_attrs)
         self.attributes = [x for x in self.attributes_with_clazz if x != self.clazz_attr]
+        self.clazz_attr_values = Dataset.loadClassValues(self.rows, self.clazz_attr)
 
     def getClassAttr(self):
         return self.clazz_attr
@@ -38,6 +43,9 @@ class Dataset():
 
     def getAttributesWithClass(self):
         return self.attributes_with_clazz
+
+    def getClassAttrValues(self):
+        return self.clazz_attr_values
 
     @staticmethod
     def loadFilteredRows(all_rows, blacklisted_attrs):
@@ -71,6 +79,13 @@ class Dataset():
             return pd.ExcelFile(dataset_folder_path + dataset_path).parse()
         else:
             raise AssertionError("Dataset type not supported!: " + str(dataset_type))
+
+    @staticmethod
+    def loadClassValues(rows, clazz_attr):
+        allCategories = []
+        for category in rows.groupby(clazz_attr).nunique().itertuples():
+            allCategories.append(category[0])
+        return allCategories
 
     @staticmethod
     def create_tenis_dataset():
@@ -120,4 +135,6 @@ class Dataset():
             attr_formula = attr_gen[1]
             all_rows[attr_name] = attr_formula(all_rows)
         return all_rows
+
+
 
