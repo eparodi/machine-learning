@@ -1,9 +1,9 @@
 from collections import namedtuple
+from enum import auto, Enum
 
 import pandas as pd
 
 Test = namedtuple('Test', 'actual guessed')
-
 
 class Evaluator:
 
@@ -28,7 +28,7 @@ class Evaluator:
                 print("ERROR!")
 
             Evaluator.addOneToDataframe(metrics, actual, "Total", metrics)
-            if (guessed == actual):
+            if guessed == actual:
                 hit += 1
             else:
                 miss += 1
@@ -59,3 +59,13 @@ class Evaluator:
     @staticmethod
     def addOneToDataframe(dataframe, category, metric, metrics):
         dataframe.loc[category, metric] = int(metrics.loc[category, metric]) + 1
+
+    def __str__(self):
+        strBuilder = ""
+        strBuilder += "\nConfusion Matrix:\n"
+        strBuilder += str(self.confusion)
+        strBuilder += "\n\nMetrics by Category:\n"
+        strBuilder += str(self.metrics)
+        strBuilder += "\n\nCorrectly categorized:\n"
+        strBuilder += str(self.correct)
+        return strBuilder

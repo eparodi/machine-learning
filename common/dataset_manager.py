@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, auto
 
 import pandas as pd
 
@@ -7,14 +7,13 @@ dataset_folder_path = "../datasets/"
 
 class Dataset:
     class Type(Enum):
-        EXCEL = 1
-        TSV = 2
-        CSV = 3
-
+        EXCEL = auto()
+        TSV = auto()
+        CSV = auto()
 
     # Hacer que transforme las variables categoricas en numericas
     # Hacer que agrupe los valores en cada atributo y les asigne un numero de orden
-    def __init__(self, dataset_path, clazz_attr, blacklisted_attrs, dataset_type, attr_generators = ()):
+    def __init__(self, dataset_path, clazz_attr, blacklisted_attrs, dataset_type, attr_generators = (), numerify=False):
         assert isinstance(dataset_path, str), "dataset_path not a str!: " + str(dataset_path.__class__)
         self.dataset_path = dataset_path
         assert isinstance(clazz_attr, str), "clazz_attr not a str!: " + str(clazz_attr.__class__)
@@ -27,7 +26,11 @@ class Dataset:
         self.all_attributes = list(self.all_rows)
         self.attributes_with_clazz = Dataset.loadFilteredAttrs(self.all_attributes, self.blacklisted_attrs)
         self.attributes = [x for x in self.attributes_with_clazz if x != self.clazz_attr]
-        self.clazz_attr_values = Dataset.loadClassValues(self.rows, self.clazz_attr)
+        self.clazz_attr_values = Dataset.loadAttrValues(self.rows, self.clazz_attr)
+        self.numerify = numerify
+        if numerify:
+            self.numericToCategoric = Dataset.loadNumericToCategoricMap(self.rows, self.all_attributes)
+
 
     def getClassAttr(self):
         return self.clazz_attr
@@ -46,6 +49,16 @@ class Dataset:
 
     def getClassAttrValues(self):
         return self.clazz_attr_values
+
+    def get_numeric_to_categoric(self):
+        return self.clazz_attr_values
+
+    # @staticmethod
+    # def categoricToNumeric(rows, numericToCategoric):
+    #     filtered_rows = all_rows.copy()
+    #     for attr in blacklisted_attrs:
+    #         filtered_rows = filtered_rows.drop(attr, axis=1)
+    #     return filtered_rows
 
     @staticmethod
     def loadFilteredRows(all_rows, blacklisted_attrs):
@@ -81,11 +94,24 @@ class Dataset:
             raise AssertionError("Dataset type not supported!: " + str(dataset_type))
 
     @staticmethod
-    def loadClassValues(rows, clazz_attr):
-        allCategories = []
-        for category in rows.groupby(clazz_attr).nunique().itertuples():
-            allCategories.append(category[0])
-        return allCategories
+    def loadAttrValues(rows, attr):
+        return rows[attr].unique()    \
+
+    @staticmethod
+    def loadNumericToCategoricMap(rows, attrs):
+        numericToCategoricMap = {}
+        for attr in attrs:
+            numericToCategoricMap[attr] = Dataset.loadAttrValues(rows, attr)
+        return numericToCategoricMap
+
+    @staticmethod
+    def generateAttrs(orig_rows, attr_generators):
+        all_rows = orig_rows.copy()
+        for attr_gen in attr_generators:
+            attr_name = attr_gen[0]
+            attr_formula = attr_gen[1]
+            all_rows[attr_name] = attr_formula(all_rows)
+        return all_rows
 
     @staticmethod
     def create_tenis_dataset():
@@ -105,7 +131,7 @@ class Dataset:
 
     @staticmethod
     def create_news_dataset():
-        return Dataset("news.tsv", "categoria", ["fecha"], Dataset.Type.TSV)
+        return Dataset("news.tsv", "categoria", ["fecha", "fuente"], Dataset.Type.TSV)
 
     @staticmethod
     def bucketed_age(age):
@@ -126,15 +152,3 @@ class Dataset:
         gen = [ ("Age", lambda r: r["Age"].apply(lambda x: Dataset.bucketed_age(x))),
                 ("Survived", lambda r: r["Survived"].apply(lambda x: ["Dead", "Survivor"][x]))]
         return Dataset("titanic.csv", "Survived", blacklistedAttrs, Dataset.Type.TSV, attr_generators=gen)
-
-    @staticmethod
-    def generateAttrs(orig_rows, attr_generators):
-        all_rows = orig_rows.copy()
-        for attr_gen in attr_generators:
-            attr_name = attr_gen[0]
-            attr_formula = attr_gen[1]
-            all_rows[attr_name] = attr_formula(all_rows)
-        return all_rows
-
-
-
