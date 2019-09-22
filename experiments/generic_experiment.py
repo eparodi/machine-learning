@@ -12,8 +12,11 @@ pd.set_option('max_colwidth', -1)
 ds = db.create_titanic_dataset()
 algorithms = []
 algorithms.append(DecisionTree(used_percentage=0.1))
+# algorithms.append(DecisionTree(used_percentage=0.25))
+# algorithms.append(DecisionTree(used_percentage=0.5))
 algorithms.append(DecisionTree(used_percentage=1))
 algorithms.append(Lottery(weighted=True))
+algorithms.append(Lottery(weighted=False))
 
 comparer = Comparer(ds, 1, algorithms, test_type=TestType.FULL_TRAINING)
 

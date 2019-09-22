@@ -1,9 +1,8 @@
-from collections import namedtuple
-
 import pandas as pd
-from common import experiment_builder as exp
-from common.dataset_manager import Dataset
-from common.experiment_evaluator import Evaluator, Test
+
+from common.dataset.dataset import Dataset
+from common.experiment import experiment_builder as exp
+from common.experiment.experiment_analizer import TestsAnalizer, Test
 from common.naive_bayes import NaiveBayes
 
 pd.set_option('display.max_columns', None)
@@ -25,6 +24,6 @@ for row in test.itertuples(index=False):
     actual = row._asdict()[class_col]
     tests.append(Test(actual, guessed))
 
-print(Evaluator(tests, class_values))
+print(TestsAnalizer(tests, class_values))
 
 

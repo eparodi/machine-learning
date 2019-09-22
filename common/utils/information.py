@@ -1,4 +1,8 @@
 import math as m
+from collections import namedtuple
+from enum import Enum
+from typing import NamedTuple
+
 import pandas as pd
 
 def entropyPart(x):
@@ -23,3 +27,17 @@ def inf_gain(data_frame: pd.DataFrame, category: str, class_col: str):
     categories["WeighedEntropy"] = categories["Weight"] * categories["Entropy"]
     # print(categories)
     return parentEntropy - categories["WeighedEntropy"].sum()
+
+# No entiendo como hacer Gini :(
+# No usar que esta roto
+def gini(data_frame: pd.DataFrame, category: str, class_col: str):
+    class_col_counts = data_frame.copy()[class_col].value_counts()
+    class_col_freq = class_col_counts / class_col_counts.sum()
+    most_likely_class = class_col_freq.idxmax()
+
+InfGainFunc = namedtuple('InfGainFunc', 'name func')
+
+
+class InfGainFunction(Enum):
+    SHANNON = InfGainFunc("SHANNON", inf_gain)
+    GINI = InfGainFunc("GINI", inf_gain)

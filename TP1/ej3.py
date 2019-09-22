@@ -1,11 +1,13 @@
 import re
 
 import pandas as pd
+import common.dataset.dataset_builder as db
 
-from common import attribute_builder as attrs, experiment_builder as exp
-from common.dataset_manager import Dataset
-from common.experiment_evaluator import Test, Evaluator
+from common.dataset.dataset import Dataset
+from common.experiment import experiment_builder as exp
+from common.experiment.experiment_analizer import Test, TestsAnalizer
 from common.naive_bayes import NaiveBayes
+from common.utils import attribute_builder as attrs
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.expand_frame_repr', False)
@@ -14,7 +16,7 @@ pd.set_option('max_colwidth', -1)
 manualAttributes = ["Google", "WhatsApp", "nuevo", "River", "Boca", "final", "San", "contra", "Gobierno", "dólar", "millones", "baja",
                   "Pérez", "Sol", "foto", "contra", "Trump", "príncipe", "mujer", "años", "cáncer", "VIH", "sarampión"]
 
-ds = Dataset.create_news_dataset()
+ds = db.create_news_dataset()
 class_col, allCategories, allNews = ds.getClassAttr(), ds.getClassAttrValues(), ds.getRows()
 
 allNews = allNews[allNews.categoria!='Noticias destacadas']
@@ -51,4 +53,4 @@ for row in test.itertuples():
     actual = row.categoria
     testResult.append(Test(actual, guessed))
 
-print(Evaluator(testResult, allCategories))
+print(TestsAnalizer(testResult, allCategories))

@@ -1,8 +1,9 @@
 import pandas as pd
 
 from common.bayesian_network import BayesianNetwork
+import common.dataset.dataset_builder as db
 
-data = pd.read_csv('binary.csv', sep=',', header=0)
+data = db.create_students_dataset().getRows()
 data['gre'] = data['gre'].ge(500)
 data['gpa'] = data['gpa'].ge(3)
 
