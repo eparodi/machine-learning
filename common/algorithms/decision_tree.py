@@ -47,13 +47,14 @@ class Node:
 
 class DecisionTree(Algorithm):
 
-    def __init__(self, min_samples=None, max_nodes=None, max_depth=None, inf_gain_function=InfGainFunction.SHANNON, used_percentage=1):
+    def __init__(self, min_samples=None, max_nodes=None, max_depth=None, inf_gain_function=InfGainFunction.SHANNON, used_percentage=1, categories=[]):
         super().__init__()
         self.used_percentage = used_percentage
         self.min_samples = min_samples
         self.inf_gain_function = inf_gain_function
         self.max_nodes = max_nodes
         self.max_depth = max_depth
+        self.categories = categories
 
     def get_tags(self):
         return {s.algorithm: "DecisionTree",
@@ -69,7 +70,8 @@ class DecisionTree(Algorithm):
             used_ds = dataset.build_random_sample_dataset(self.used_percentage)
 
         self.data_frame = used_ds.getRows().copy()
-        self.categories = used_ds.getAttributes().copy()
+        if len(self.categories) == 0:
+            self.categories = used_ds.getAttributes().copy()
         self.class_col = used_ds.getClassAttr()
         self.tree = self.evaluateNextNode(self.data_frame, self.categories, self.class_col, 0, self.max_nodes)
         self.is_trained = True
