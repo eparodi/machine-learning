@@ -5,6 +5,9 @@ from typing import NamedTuple
 
 import pandas as pd
 
+from common.utils.probs import get_class_probs
+
+
 def entropyPart(x):
     return -m.log2(x)*x
 
@@ -28,16 +31,18 @@ def inf_gain(data_frame: pd.DataFrame, category: str, class_col: str):
     # print(categories)
     return parentEntropy - categories["WeighedEntropy"].sum()
 
-# No entiendo como hacer Gini :(
-# No usar que esta roto
 def gini(data_frame: pd.DataFrame, category: str, class_col: str):
-    class_col_counts = data_frame.copy()[class_col].value_counts()
-    class_col_freq = class_col_counts / class_col_counts.sum()
-    most_likely_class = class_col_freq.idxmax()
+    probs = get_class_probs(data_frame, category)
+    return 1 - sum([probs[key]*probs[key] for key in probs.keys()])
+
+def error(data_frame: pd.DataFrame, category: str, class_col: str):
+    probs = get_class_probs(data_frame, category)
+    return 1 - probs[probs.idxmax()]
 
 InfGainFunc = namedtuple('InfGainFunc', 'name func')
 
 
 class InfGainFunction(Enum):
     SHANNON = InfGainFunc("SHANNON", inf_gain)
-    GINI = InfGainFunc("GINI", inf_gain)
+    GINI = InfGainFunc("GINI", gini)
+    ERROR = InfGainFunc("ERROR", error)

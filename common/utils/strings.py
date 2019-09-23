@@ -19,4 +19,4 @@ truePositives = "TruePositives"
 total = "Total"
 
 def one_line_dict(dict:dict, limit=5):
-    return str([key + ":" + str(dict[key])[:limit] for key in list(dict.keys())])
+    return str([str(key) + ":" + str(dict[key])[:limit] for key in list(dict.keys())])

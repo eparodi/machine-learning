@@ -21,3 +21,13 @@ class Algorithm(ABC):
 
     def is_trained(self):
         return self.is_trained
+
+
+# algorithms = build_algorithm_permutation(DecisionTree, [{"max_nodes":range(0,4)}])
+
+# def build_algorithm_permutation(algorithm: Algorithm, parameters: [()]):
+#     algorithms = []
+#
+#     for param in parameters:
+#         algorithms.append(algorithm(**param))
+#     return algorithms
