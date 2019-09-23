@@ -7,22 +7,19 @@ from common.utils.information import InfGainFunction
 
 
 class RandomForest(Algorithm):
-    def __init__(self, n_trees=5, data_used=0.6, attrs_used=0.8, inf_gain_function=InfGainFunction.SHANNON):
-        self.is_trained = False
+    def __init__(self, n_trees=5, data_used=0.5, attrs_used=0.5, inf_gain_function=InfGainFunction.SHANNON):
+        super().__init__()
         self.attrs_used = attrs_used
         self.data_used = data_used
         self.n_trees = n_trees
         self.inf_gain_function = inf_gain_function
 
-    def is_trained(self):
-        return self.is_trained
-
     def train(self, dataset: Dataset):
-        self.data_frame = dataset.getRows().copy()
-        self.categories = dataset.getAttributes().copy()
-        self.class_col = dataset.getClassAttr()
-        self.trees = RandomForest.build_trees()
-        self.is_trained = True
+        self.dataset = dataset
+        self.categories = dataset.getAttributes()
+        self.trees = self.build_trees()
+        for tree in self.trees:
+            print(str(tree))
 
     def get_tags(self):
         return {"Algorithm": "RandomForest",
@@ -32,12 +29,21 @@ class RandomForest(Algorithm):
                 }
 
     def evaluate(self, values_dict: dict):
-        pass
+        votes = {}
+        for clazz_value in self.dataset.getClassAttrValues():
+            votes[clazz_value] = 0
+        for tree in self.trees:
+            result = tree.evaluate(values_dict=values_dict)
+            votes[result] += 1
+        return max(votes, key=votes.get)
 
     def build_trees(self):
         trees = []
         for i in range(0, self.n_trees):
-            tree_data = self.data_frame.sample(frac=self.data_used, )
-            tree_categories = sample(categories, len(categories)*categories_used)
-            trees.append(DecisionTree(tree_data, tree_categories, class_col))
+            tree_dataset = self.dataset.build_random_sample_dataset(self.data_used)
+            tree_categories = sample(self.dataset.getAttributes(), int(len(self.categories)*self.attrs_used))
+            tree = DecisionTree(max_nodes=4, categories=tree_categories, inf_gain_function=self.inf_gain_function)
+            tree.train(tree_dataset)
+            trees.append(tree)
         return trees
+

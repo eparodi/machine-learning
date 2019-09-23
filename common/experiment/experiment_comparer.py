@@ -42,7 +42,7 @@ class Comparer():
     def calculate_results(cls):
         results = []
         for algorithm in cls.algorithms:
-            # print("Training " + str(algorithm.get_tags()["Algorithm"]) + " with " + str(len(cls.training_set.getRows())))
+            print("Training " + str(algorithm.get_tags()["Algorithm"]) + " with " + str(len(cls.training_set.getRows())))
             algorithm.train(cls.training_set)
             tests = []
             for row in cls.test_set.getRows().itertuples(index=False):
@@ -73,14 +73,16 @@ class Comparer():
 
     def __str__(self):
         strBuilder = ""
-        strBuilder += "\nTest type:\n"
+        strBuilder += "\nTest type:"
         strBuilder += str(self.test_type.name)
-        strBuilder += "\nTrain Percentage:\n"
+        strBuilder += "\nTrain Percentage:"
         strBuilder += str(self.train_percentage)
-        strBuilder += "\nTraining Set:\n"
-        strBuilder += str(self.training_set)
-        strBuilder += "\n\nTest Set:\n"
-        strBuilder += str(self.test_set)
+        strBuilder += "\nData Set Size:"
+        strBuilder += str(len(self.dataset.getRows()))
+        strBuilder += "\nTraining Set Size:"
+        strBuilder += str(len(self.training_set.getRows()))
+        strBuilder += "\nTest Set Size:"
+        strBuilder += str(len(self.test_set.getRows()))
         strBuilder += "\n\nSummary:\n"
         strBuilder += str(self.result_summary)
         return strBuilder
