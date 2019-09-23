@@ -1,5 +1,5 @@
 from common.dataset.dataset import Dataset
-
+import numpy as np
 
 def create_tenis_dataset():
     return Dataset("Juega", blacklisted_attrs=["Dia"], dataset_path="juegaTenis.csv", dataset_type=Dataset.Type.CSV)
@@ -53,7 +53,23 @@ def create_news_dataset():
     return Dataset("categoria", blacklisted_attrs=["fecha", "fuente"], dataset_path="news.tsv", dataset_type=Dataset.Type.TSV)
 
 def create_feelings_dataset():
-    return Dataset("Star Rating", blacklisted_attrs=["Review Title", "Review Text", "textSentiment"], dataset_path="reviews_sentiment.csv", dataset_type=Dataset.Type.CSV, sep=";")
+    string_values = {
+        'negative': 0,
+        'positive': 1,
+        np.nan: 0.5
+    }
+    gen = [
+        ("titleSentiment", lambda r: r["titleSentiment"].apply(lambda x: string_values[x])),
+        ("wordcount", lambda r: r["wordcount"] / r["wordcount"].max()),
+        ("sentimentValue", lambda r: r["sentimentValue"] / r["sentimentValue"].max())
+    ]
+    return Dataset(
+        "StarRating",
+        blacklisted_attrs=["Review Title", "Review Text", "textSentiment"],
+        dataset_path="reviews_sentiment.csv",
+        dataset_type=Dataset.Type.CSV,
+        sep=";",
+        attr_generators=gen)
 
 def bucketed_age(age):
     if age < 12:

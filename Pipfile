@@ -11,6 +11,8 @@ pandas = "*"
 xlrd = "*"
 ipython = "*"
 ipdb = "*"
+matplotlib = "*"
+tkinter = "*"
 
 [requires]
 python_version = "3.7"

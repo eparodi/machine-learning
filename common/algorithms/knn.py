@@ -1,45 +1,58 @@
 from .algorithm import Algorithm
 from common.dataset.dataset import Dataset
 
+import common.utils.strings as s
 import numpy as np
 
 class KNN(Algorithm):
 
-    def __init__(self, tr_perc=0.5):
+    DISTANCE = 'dist'
+    attributes = []
+    classAttribute = None
+
+    def __init__(self, k=5, weighted=False):
         super().__init__()
-        self.tr_perc = tr_perc
+        self.weighted = weighted
+        self.k = k
 
     def train(self, dataset: Dataset):
-        rows = dataset.build_random_sample_dataset(self.tr_perc).getRows()
-        self.rows = rows.replace(to_replace={'negative': -1, 'positive': 1, np.nan: 0})
+        self.attributes = dataset.getAttributes()
+        self.classAttribute = dataset.getClassAttr()
+        self.rows = dataset.getRows()
 
-    def __weighted_evaluation(self, weights, k):
-        sums = weights.head(k).groupby('Star Rating').sum().sort_values('dist')
-        return sums.idxmin()['dist']
+    def __weighted_evaluation(self, weights):
+        weights[self.DISTANCE] = 1 / weights[self.DISTANCE]
+        sums = weights.head(self.k).groupby(self.classAttribute).sum().sort_values(self.DISTANCE)
+        return sums.idxmax()[self.DISTANCE]
 
-    def __unweighted_evaluation(self, weights, k):
+    def __unweighted_evaluation(self, weights):
         result = None
+        k = self.k
         while not result:
             sums = weights.head(k).groupby(
-                'Star Rating').count().sort_values('dist', ascending=False)
+                self.classAttribute).count().sort_values(self.DISTANCE, ascending=False)
             values = list(sums.values[:, 0])
             if values.count(max(values)) == 1:
-                return sums.idxmax()['dist']
+                return sums.idxmax()[self.DISTANCE]
             k += 1
 
-    def evaluate(self, values_dict, k=5, weighted=False):
+    def evaluate(self, values_dict):
         distances = self.rows
-        wordCount = values_dict['wordcount']
-        distances['dist'] = np.sqrt(
-            (distances['wordcount'] - values_dict['wordcount']) ** 2 +
-            (distances['titleSentiment'] - values_dict['titleSentiment']) ** 2 +
-            (distances['sentimentValue'] - values_dict['sentimentValue']) ** 2)
-        distances = distances[['dist', 'Star Rating']]
-        distances = distances.sort_values(by=['dist'])
-        if weighted:
-            return self.__weighted_evaluation(distances, k)
+        distances[self.DISTANCE] = 0
+        for attr in self.attributes:
+            distances[self.DISTANCE] += (distances[attr] -
+                                         values_dict[attr]) ** 2
+        distances[self.DISTANCE] = np.sqrt(distances[self.DISTANCE])
+        distances = distances[[self.DISTANCE, self.classAttribute]]
+        distances = distances.sort_values(by=[self.DISTANCE])
+        if self.weighted:
+            return self.__weighted_evaluation(distances)
         else:
-            return self.__unweighted_evaluation(distances, k)
+            return self.__unweighted_evaluation(distances)
 
     def get_tags(self):
-        return super().get_tags()
+        return {
+            s.algorithm: "KNN",
+            "weighted": self.weighted,
+            "k": self.k,
+        }
