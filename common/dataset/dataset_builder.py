@@ -20,6 +20,8 @@ def create_britons_dataset():
 def create_news_dataset():
     return Dataset("categoria", blacklisted_attrs=["fecha", "fuente"], dataset_path="news.tsv", dataset_type=Dataset.Type.TSV)
 
+def create_feelings_dataset():
+    return Dataset("Star Rating", blacklisted_attrs=["Review Title", "Review Text", "textSentiment"], dataset_path="reviews_sentiment.csv", dataset_type=Dataset.Type.CSV, sep=";")
 
 def bucketed_age(age):
     if age < 12:

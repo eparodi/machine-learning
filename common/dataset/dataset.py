@@ -14,7 +14,7 @@ class Dataset:
 
     # Hacer que transforme las variables categoricas en numericas
     # Hacer que agrupe los valores en cada atributo y les asigne un numero de orden
-    def __init__(self, clazz_attr, rows=None, dataset_path=None, dataset_type=None, blacklisted_attrs=(), attr_generators=(),dataset=None, numerify=False):
+    def __init__(self, clazz_attr, rows=None, dataset_path=None, dataset_type=None, blacklisted_attrs=(), attr_generators=(),dataset=None, numerify=False, sep=','):
         if (rows is None or dataset is None) and (dataset_path is None or dataset_type is None):
             raise AssertionError("You must init with (rows and dataset) or with (dataset_path and dataset_type)!")
         if (rows is not None or dataset is not None) and (dataset_path is not None or dataset_type is not None):
@@ -26,7 +26,7 @@ class Dataset:
             self.clazz_attr_values = dataset.getClassAttrValues().copy()
             self.attributes = dataset.getAttributes()
         elif dataset_path is not None and dataset_type is not None:
-            orig_rows = Dataset.loadRows(dataset_path, dataset_type)
+            orig_rows = Dataset.loadRows(dataset_path, dataset_type, sep)
             blacklisted_attrs = Dataset.loadBlacklists(blacklisted_attrs)
             attr_generators = attr_generators
             all_rows = Dataset.generateAttrs(orig_rows, attr_generators)
@@ -104,13 +104,13 @@ class Dataset:
             raise AssertionError("blacklisted_attrs not a str or a list or a tuple!: " + str(blacklisted_attrs.__class__))
 
     @staticmethod
-    def loadRows(dataset_path, dataset_type):
+    def loadRows(dataset_path, dataset_type, sep=','):
         base_path = dataset_folder_path
         if not os.path.exists(base_path + dataset_path):
             base_path = alt_dataset_folder_path
 
         if dataset_type == Dataset.Type.CSV:
-            return pd.read_csv(base_path + dataset_path, sep=',', header=0)
+            return pd.read_csv(base_path + dataset_path, sep=sep, header=0)
         elif dataset_type == Dataset.Type.TSV:
             return pd.read_csv(base_path + dataset_path, sep='\t', header=0)
         elif dataset_type == Dataset.Type.EXCEL:
