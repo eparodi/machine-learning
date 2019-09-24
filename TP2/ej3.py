@@ -17,8 +17,17 @@ algorithms.append(KNN(weighted=True))
 for x in range(3, 10):
     comparer = Comparer(dataset, x/10, algorithms, test_type=TestType.DISJOINT)
     print(comparer)
+    for r in comparer.results:
+        print(r.confusion)
 
 df = dataset.getRows()
+df['StarRating'] = df['StarRating'].replace({
+    1: "blue",
+    2: "red",
+    3: "green",
+    4: "yellow",
+    5: "brown",
+})
 threedee = plt.figure().gca(projection='3d')
 threedee.scatter(df['wordcount'], df['titleSentiment'], df['sentimentValue'], c=df['StarRating'])
 threedee.set_xlabel('wordcount')
