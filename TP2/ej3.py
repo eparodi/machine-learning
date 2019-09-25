@@ -3,6 +3,7 @@ import os, sys; sys.path.append(os.getcwd())
 from common.algorithms.knn import KNN
 from common.dataset.dataset_builder import create_feelings_dataset
 from common.experiment.experiment_comparer import Comparer, TestType
+from mpl_toolkits.mplot3d import Axes3D
 
 import matplotlib.pyplot as plt
 
