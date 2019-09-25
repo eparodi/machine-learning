@@ -47,8 +47,8 @@ class Dataset:
         # if numerify:
         #     self.numericToCategoric = Dataset.loadNumericToCategoricMap(self.rows, self.all_attributes)
 
-    def build_random_sample_dataset(self, frac):
-        sampled_rows = self.getRows().sample(frac=frac, replace=True)
+    def build_random_sample_dataset(self, frac, replace=True):
+        sampled_rows = self.getRows().sample(frac=frac, replace=replace)
         return self.copy_dataset_with_new_rows(sampled_rows)
 
     def split_dataset(self, frac):
@@ -56,6 +56,17 @@ class Dataset:
         split_index = int(frac*len(shuffled_rows))
         return self.copy_dataset_with_new_rows(shuffled_rows[:split_index]), \
                self.copy_dataset_with_new_rows(shuffled_rows[split_index:])
+
+    def partition_dataset(self, partitions_amount, partition_index):
+        partition_size = int(len(self.getRows())/partitions_amount)
+        start = partition_index*partitions_amount
+        test_set = self.copy_dataset_with_new_rows(self.getRows()[start:start + partition_size])
+        training_sets = []
+        if start != 0:
+            training_sets.append(self.getRows()[0:start-1])
+        if start + partition_size < len(self.getRows()):
+            training_sets.append(self.getRows()[start + partition_size+1:-1])
+        return self.copy_dataset_with_new_rows(pd.concat(training_sets)), test_set
 
     def copy_dataset_with_new_rows(self, rows):
         return Dataset(self.clazz_attr, rows=rows, dataset=self)

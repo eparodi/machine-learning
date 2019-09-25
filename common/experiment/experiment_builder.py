@@ -1,3 +1,8 @@
+from abc import ABC, abstractmethod
+from collections import namedtuple
+
+from common.dataset.dataset import Dataset
+
 
 def naive_split(trainingPercentage, dataframe):
     middleIndex = int(len(dataframe) * trainingPercentage)
@@ -21,3 +26,17 @@ def maxDictItem(map):
             maxCat = category
             maxCatConfidence = confidence
     return maxCat
+
+# TestLayout = namedtuple('TestLayout', 'training_set test_set')
+#
+# class TestStrategy(ABC):
+#     def __init__(self):
+#         self.trained = False
+#
+#     @abstractmethod
+#     #Returns a list of TestLayout, to be used in the experiment Comparer
+#     def split_dataset(self, dataset: Dataset):
+#         pass
+#
+# class SAMPLED(TestStrategy):
+
