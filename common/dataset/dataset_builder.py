@@ -61,7 +61,6 @@ def create_feelings_dataset():
     gen = [
         ("titleSentiment", lambda r: r["titleSentiment"].apply(lambda x: string_values[x])),
         ("wordcount", lambda r: r["wordcount"] / r["wordcount"].max()),
-        ("sentimentValue", lambda r: r["sentimentValue"] / r["sentimentValue"].max())
     ]
     return Dataset(
         "StarRating",
