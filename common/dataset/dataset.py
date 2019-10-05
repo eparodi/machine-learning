@@ -14,7 +14,9 @@ class Dataset:
 
     # Hacer que transforme las variables categoricas en numericas
     # Hacer que agrupe los valores en cada atributo y les asigne un numero de orden
-    def __init__(self, clazz_attr, rows=None, dataset_path=None, dataset_type=None, blacklisted_attrs=(), attr_generators=(),dataset=None, numerify=False, sep=','):
+    def __init__(self, clazz_attr, rows=None, dataset_path=None, dataset_type=None, 
+        blacklisted_attrs=(), attr_generators=(),dataset=None, numerify=False, sep=',',
+        remove_nan=False):
         if (rows is None or dataset is None) and (dataset_path is None or dataset_type is None):
             raise AssertionError("You must init with (rows and dataset) or with (dataset_path and dataset_type)!")
         if (rows is not None or dataset is not None) and (dataset_path is not None or dataset_type is not None):
@@ -39,6 +41,8 @@ class Dataset:
         else:
             raise AssertionError("Something went wrong with dataset creation")
 
+        if remove_nan:
+            self.rows = self.rows.dropna()
         # self.numerify = numerify
         # if numerify:
         #     self.numericToCategoric = Dataset.loadNumericToCategoricMap(self.rows, self.all_attributes)

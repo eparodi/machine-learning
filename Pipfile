@@ -12,7 +12,9 @@ xlrd = "*"
 ipython = "*"
 ipdb = "*"
 matplotlib = "*"
-tkinter = "*"
+scikit-learn = "*"
+mlxtend = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.7"

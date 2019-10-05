@@ -88,3 +88,7 @@ def create_titanic_dataset():
     gen = [("Age", lambda r: r["Age"].apply(lambda x: bucketed_age(x))),
            ("Survived", lambda r: r["Survived"].apply(lambda x: ["Dead", "Survivor"][x]))]
     return Dataset("Survived", blacklisted_attrs=blacklistedAttrs, dataset_path="titanic.csv", dataset_type=Dataset.Type.TSV, attr_generators=gen)
+
+def create_heart_dataset():
+    blacklistedAttrs = ["tvdlm"]
+    return Dataset("sigdz", blacklisted_attrs=blacklistedAttrs, dataset_path="acath.xls", dataset_type=Dataset.Type.EXCEL, remove_nan=True)
