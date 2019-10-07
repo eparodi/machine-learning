@@ -122,4 +122,4 @@ def create_linearly_separable_dataset(n=20, height=100, width=100, center=0.2):
 
 def create_heart_dataset():
     blacklistedAttrs = ["tvdlm"]
-    return Dataset("sigdz", blacklisted_attrs=blacklistedAttrs, dataset_path="acath.xls", dataset_type=Dataset.Type.EXCEL, remove_nan=True)
+    return Dataset.build_dataset_from_path("sigdz", blacklisted_attrs=blacklistedAttrs, dataset_path="acath.xls", dataset_type=Dataset.Type.EXCEL, remove_nan=True)
