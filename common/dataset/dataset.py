@@ -14,38 +14,40 @@ class Dataset:
 
     # Hacer que transforme las variables categoricas en numericas
     # Hacer que agrupe los valores en cada atributo y les asigne un numero de orden
-    def __init__(self, clazz_attr, rows=None, dataset_path=None, dataset_type=None, 
-        blacklisted_attrs=(), attr_generators=(),dataset=None, numerify=False, sep=',',
-        remove_nan=False):
-        if (rows is None or dataset is None) and (dataset_path is None or dataset_type is None):
-            raise AssertionError("You must init with (rows and dataset) or with (dataset_path and dataset_type)!")
-        if (rows is not None or dataset is not None) and (dataset_path is not None or dataset_type is not None):
-            raise AssertionError("You must init with (rows and dataset) OR with (dataset_path and dataset_type) but not both!")
+    def __init__(self, clazz_attr, rows, attributes, clazz_attr_values):
         self.clazz_attr = clazz_attr
+        self.rows=rows
+        self.attributes=attributes
+        self.clazz_attr_values=clazz_attr_values
 
-        if rows is not None and dataset is not None:
-            self.rows = rows
-            self.clazz_attr_values = dataset.getClassAttrValues().copy()
-            self.attributes = dataset.getAttributes()
-        elif dataset_path is not None and dataset_type is not None:
-            orig_rows = Dataset.loadRows(dataset_path, dataset_type, sep)
-            blacklisted_attrs = Dataset.loadBlacklists(blacklisted_attrs)
-            attr_generators = attr_generators
-            all_rows = Dataset.generateAttrs(orig_rows, attr_generators)
-            self.rows = Dataset.loadFilteredRows(all_rows, blacklisted_attrs)
+    @staticmethod
+    def build_dataset_from_path(clazz_attr, dataset_path, dataset_type, sep=",", blacklisted_attrs=(), attr_generators=(), remove_nan=False):
+        orig_rows = Dataset.loadRows(dataset_path, dataset_type, sep)
+        blacklisted_attrs = Dataset.loadBlacklists(blacklisted_attrs)
+        attr_generators = attr_generators
+        all_rows = Dataset.generateAttrs(orig_rows, attr_generators)
+        rows = Dataset.loadFilteredRows(all_rows, blacklisted_attrs)
 
-            all_attributes = list(all_rows)
-            attributes_with_clazz = Dataset.loadFilteredAttrs(all_attributes, blacklisted_attrs)
-            self.attributes = [x for x in attributes_with_clazz if x != self.clazz_attr]
-            self.clazz_attr_values = Dataset.loadAttrValues(self.rows, self.clazz_attr)
-        else:
-            raise AssertionError("Something went wrong with dataset creation")
-
+        all_attributes = list(all_rows)
+        attributes_with_clazz = Dataset.loadFilteredAttrs(all_attributes, blacklisted_attrs)
+        attributes = [x for x in attributes_with_clazz if x != clazz_attr]
+        clazz_attr_values = Dataset.loadAttrValues(rows, clazz_attr)
         if remove_nan:
-            self.rows = self.rows.dropna()
-        # self.numerify = numerify
-        # if numerify:
-        #     self.numericToCategoric = Dataset.loadNumericToCategoricMap(self.rows, self.all_attributes)
+            rows = rows.dropna()
+        return Dataset(clazz_attr=clazz_attr, rows=rows, attributes=attributes, clazz_attr_values=clazz_attr_values)
+
+    @staticmethod
+    def build_dataset_from_dataset(dataset, rows):
+        return Dataset(clazz_attr=dataset.getClassAttr(), rows=rows, attributes=dataset.getAttributes(), clazz_attr_values=dataset.getClassAttrValues())
+
+    @staticmethod
+    def build_dataset_from_rows(clazz_attr, rows, blacklisted_attrs=()):
+        blacklisted_attrs = Dataset.loadBlacklists(blacklisted_attrs)
+        all_attributes = list(rows)
+        attributes_with_clazz = Dataset.loadFilteredAttrs(all_attributes, blacklisted_attrs)
+        attributes = [x for x in attributes_with_clazz if x != clazz_attr]
+        clazz_attr_values = Dataset.loadAttrValues(rows, clazz_attr)
+        return Dataset(clazz_attr=clazz_attr, rows=rows, attributes=attributes, clazz_attr_values=clazz_attr_values)
 
     def build_random_sample_dataset(self, frac, replace=True):
         sampled_rows = self.getRows().sample(frac=frac, replace=replace)
@@ -69,7 +71,7 @@ class Dataset:
         return self.copy_dataset_with_new_rows(pd.concat(training_sets)), test_set
 
     def copy_dataset_with_new_rows(self, rows):
-        return Dataset(self.clazz_attr, rows=rows, dataset=self)
+        return Dataset.build_dataset_from_dataset(rows=rows, dataset=self)
 
     def getClassAttr(self):
         return self.clazz_attr

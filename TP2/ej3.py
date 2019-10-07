@@ -17,8 +17,10 @@ algorithms.append(KNN(weighted=True))
 for x in range(3, 10):
     comparer = Comparer(dataset, x/10, algorithms, test_type=TestType.DISJOINT)
     print(comparer)
-    for r in comparer.results:
-        print(r.confusion)
+    print("\nConfusion:")
+    print(comparer.last_confusion)
+    # for r in comparer.results:
+    #     print(r.last_confusion)
 
 df = dataset.getRows()
 df['StarRating'] = df['StarRating'].replace({

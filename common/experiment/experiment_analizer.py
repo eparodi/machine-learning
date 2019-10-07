@@ -28,7 +28,7 @@ class TestsAnalizer:
                 oldValue = confusion.loc[actual, guessed]
                 confusion.loc[actual, guessed] = int(oldValue) + 1
             except KeyError:
-                print(self.stack_trace(confusion, actual, guessed, oldValue))
+                print(self.stack_trace(confusion, actual, guessed))
 
             TestsAnalizer.addOneToDataframe(metrics, actual, "Total", metrics)
             if guessed == actual:
@@ -99,7 +99,7 @@ class TestsAnalizer:
         strBuilder += str(self.summary)
         return strBuilder
 
-    def stack_trace(self, confusion, actual, guessed, oldvalue):
+    def stack_trace(self, confusion, actual, guessed):
         strBuilder = "StackTrace:"
         strBuilder += "\nConfusion:\n"
         strBuilder += str(confusion)
@@ -107,6 +107,4 @@ class TestsAnalizer:
         strBuilder += str(actual)
         strBuilder += "\nGuessed:\n"
         strBuilder += str(guessed)
-        strBuilder += "\nOldValue:\n"
-        strBuilder += str(oldvalue)
         return strBuilder

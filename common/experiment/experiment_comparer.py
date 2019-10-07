@@ -38,7 +38,7 @@ class TestType(Enum):
         for round in range(0, rounds):
             for strategy in self.value.split_strategy(dataset, train_percentage):
                 strategies.append(strategy)
-        return  strategies
+        return strategies
 
 
 class Comparer():
