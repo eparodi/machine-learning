@@ -29,15 +29,15 @@ X = df.drop(['sigdz', 'tvdlm'], axis=1)
 y = df['sigdz']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.50)
 
-algorithms = [
-    SVC(kernel='linear'),
-    SVC(kernel='sigmoid', coef0=0.5),
-    SVC(kernel='sigmoid', coef0=0.8),
-    SVC(kernel='sigmoid', coef0=1),
-    SVC(kernel='rbf'),
-    SVC(kernel='poly', degree=3),
-    SVC(kernel='poly', degree=5),
-]
+algorithms = []
+for C in range(0, 10, 0.1):
+    algorithms += [
+        SVC(kernel='linear', C=C),
+        SVC(kernel='sigmoid', coef0=0.5, gamma=0.1, C=C),
+        SVC(kernel='sigmoid', coef0=0.8, gamma=0.1, C=C),
+        SVC(kernel='sigmoid', coef0=1, gamma=0.1, C=C),
+        SVC(kernel='rbf', gamma=0.1, C=C)
+    ]
 for algorithm in algorithms:
     algorithm.fit(X_train, y_train)
 

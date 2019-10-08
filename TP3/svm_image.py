@@ -1,6 +1,4 @@
-import os
-import sys
-sys.path.append(os.getcwd())
+import os, sys; sys.path.append(os.getcwd())
 
 from common.algorithms.svm import SVM
 from common.experiment.experiment_comparer import TestType, Comparer
@@ -61,7 +59,7 @@ svm = SVC(kernel='linear', cache_size=1024*4, C=1.0)
 # svm = SVC(kernel='sigmoid', coef0=0.5, cache_size=1024*4)
 # svm = SVC(kernel='sigmoid', coef0=0.8, cache_size=1024*4)
 # svm = SVC(kernel='sigmoid', coef0=1, cache_size=1024*4)
-# svm = SVC(kernel='rbf', cache_size=1024*4, C=1.0, gamma=0.1)
+svm = SVC(kernel='rbf', cache_size=1024*4, C=1.0, gamma=0.1)
 X_train = df.drop("class",axis=1)
 y_train = df["class"]
 svm.fit(X_train, y_train)
