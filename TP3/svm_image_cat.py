@@ -14,16 +14,12 @@ import matplotlib.pyplot as plt
 
 cls_images = [
     {
-        "file": "../datasets/cielo.jpg",
-        "class": "cielo",
+        "file": "../datasets/fur.png",
+        "class": "cat",
     },
     {
-        "file": "../datasets/vaca.jpg",
-        "class": "vaca",
-    },
-    {
-        "file": "../datasets/pasto.jpg",
-        "class": "pasto",
+        "file": "../datasets/grass.png",
+        "class": "grass",
     },
 ]
 
@@ -59,35 +55,31 @@ svm = SVC(kernel='linear', cache_size=1024*4, C=1.0)
 # svm = SVC(kernel='sigmoid', coef0=0.5, cache_size=1024*4)
 # svm = SVC(kernel='sigmoid', coef0=0.8, cache_size=1024*4)
 # svm = SVC(kernel='sigmoid', coef0=1, cache_size=1024*4)
-svm = SVC(kernel='rbf', cache_size=1024*4, C=1.0, gamma=0.1)
+# svm = SVC(kernel='rbf', cache_size=1024*4, C=1.0, gamma=0.1)
 X_train = df.drop("class",axis=1)
 y_train = df["class"]
 svm.fit(X_train, y_train)
 
 print("Predicting image")
-cow_df, image = image_to_df("../datasets/cow.jpg")
-y_pred = svm.predict(cow_df)
+cat_df, image = image_to_df("../datasets/cat.png")
+y_pred = svm.predict(cat_df)
 
 print("Cropping images")
-cow_df['class'] = y_pred
-cielo_df = crop_images('cielo', cow_df)
-vaca_df = crop_images('vaca', cow_df)
-pasto_df = crop_images('pasto', cow_df)
+cat_df['class'] = y_pred
+catimg_df = crop_images('cat', cat_df)
+grass_df = crop_images('grass', cat_df)
 
 print("Showing images")
 width, height = image.size
-Image.fromarray(np.uint8(cielo_df.values.reshape(height, width, 3))).save("sky.png")
-Image.fromarray(np.uint8(vaca_df.values.reshape(
-    height, width, 3))).save("cow.png")
-Image.fromarray(np.uint8(pasto_df.values.reshape(
-    height, width, 3))).save("grass.png")
+Image.fromarray(np.uint8(grass_df.values.reshape(height, width, 3))).save("grass2.png")
+Image.fromarray(np.uint8(catimg_df.values.reshape(
+    height, width, 3))).save("cat.png")
 
 print("Plot image distribution")
 plot_df = df.copy()
 plot_df['color'] = plot_df['class'].replace({
-    "cielo": "blue",
-    "vaca": "brown",
-    "pasto": "green",
+    "cat": "gray",
+    "grass": "green",
 })
 threedee = plt.figure().gca(projection='3d')
 threedee.scatter(plot_df['r'], plot_df['g'],

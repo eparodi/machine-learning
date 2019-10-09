@@ -30,19 +30,21 @@ y = df['sigdz']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.50)
 
 algorithms = []
-for C in range(0, 10, 0.1):
+for C in range(1, 10, 1):
     algorithms += [
         SVC(kernel='linear', C=C),
+        SVC(kernel='sigmoid', coef0=0.3, gamma=0.1, C=C),
         SVC(kernel='sigmoid', coef0=0.5, gamma=0.1, C=C),
         SVC(kernel='sigmoid', coef0=0.8, gamma=0.1, C=C),
-        SVC(kernel='sigmoid', coef0=1, gamma=0.1, C=C),
         SVC(kernel='rbf', gamma=0.1, C=C)
     ]
+
 for algorithm in algorithms:
     algorithm.fit(X_train, y_train)
 
     y_pred = algorithm.predict(X_test)
 
+    print(algorithm)
     print(confusion_matrix(y_test, y_pred))
     print(classification_report(y_test, y_pred))
 
