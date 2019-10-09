@@ -4,3 +4,4 @@
 *.tsv
 .vscode/
 __pycache__/
+*.png
