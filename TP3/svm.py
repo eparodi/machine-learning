@@ -18,13 +18,13 @@ y = df['sigdz']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.50)
 
 algorithms = []
-for C in range(1, 5, 1):
+for C in range(5, 50, 5):
     algorithms += [
         SVC(kernel='linear', C=C),
         SVC(kernel='sigmoid', coef0=0.3, gamma=0.1, C=C),
         SVC(kernel='sigmoid', coef0=0.5, gamma=0.1, C=C),
         SVC(kernel='sigmoid', coef0=0.8, gamma=0.1, C=C),
-        SVC(kernel='rbf', gamma=0.1, C=C)
+        SVC(kernel='rbf', gamma=0.001, C=C)
     ]
 
 metrics = []
@@ -44,5 +44,5 @@ for key in metrics[0][1].keys():
     print(key)
     max_alg = max(metrics, key=lambda m: m[1][key])
     print(max_alg[0])
-    print(max_alg[0].support_vectors_)
+    # print(max_alg[0].support_vectors_)
     

@@ -27,12 +27,15 @@ cls_images = [
     },
 ]
 
-classes = []
+X_train_arr = []
+y_train_arr = []
+X_test_arr = []
+y_test_arr = []
 
 def image_to_df(path):
     colourImg = Image.open(path)
     width, height = colourImg.size
-    colourImg = colourImg.resize((int(width / 2), int(height / 2)), Image.ANTIALIAS)
+    # colourImg = colourImg.resize((int(width / 2), int(height / 2)), Image.ANTIALIAS)
     colourPixels = colourImg.convert("RGB")
     colourArray = np.array(colourPixels.getdata()).reshape(
         colourImg.size + (3,))
@@ -48,21 +51,31 @@ print("Reading images")
 
 for cls_image in cls_images:
     df, _ = image_to_df(cls_image["file"])
+    X = df.copy()
     df["class"] = cls_image["class"]
-    classes.append(df)
+    y = df["class"]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.70)
+    X_train_arr.append(X_train)
+    y_train_arr.append(y_train)
+    X_test_arr.append(X_test)
+    y_test_arr.append(y_test)
 
-df = pd.concat(classes)
-df = df.drop_duplicates()
+X_train = pd.concat(X_train_arr)
+X_test = pd.concat(X_test_arr)
+y_train = pd.concat(y_train_arr)
+y_test = pd.concat(y_test_arr)
 
 print("SVM learning")
 svm = SVC(kernel='linear', cache_size=1024*4, C=1.0)
 # svm = SVC(kernel='sigmoid', coef0=0.5, cache_size=1024*4)
 # svm = SVC(kernel='sigmoid', coef0=0.8, cache_size=1024*4)
 # svm = SVC(kernel='sigmoid', coef0=1, cache_size=1024*4)
-# svm = SVC(kernel='rbf', cache_size=1024*4, C=1.0, gamma=0.1)
-X_train = df.drop("class",axis=1)
-y_train = df["class"]
+# svm = SVC(kernel='rbf', cache_size=1024*4, C=1.0, gamma=0.001)
 svm.fit(X_train, y_train)
+
+y_pred = svm.predict(X_test)
+print(confusion_matrix(y_test, y_pred))
+print(classification_report(y_test, y_pred))
 
 print("Predicting image")
 cow_df, image = image_to_df("../datasets/cow.jpg")
