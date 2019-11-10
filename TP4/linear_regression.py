@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
 
@@ -7,7 +8,6 @@ def evaluate_by_rsq(X_test, X_train, y_train, y_test, rsq):
     while change_rsq:
         change_rsq = False
         dropped_column = None
-        print(len(X_test.columns))
         for col in X_test.columns:
             X_te = X_test.drop(col, axis=1)
             X_tr = X_train.drop(col, axis=1)
@@ -31,7 +31,6 @@ def evaluate_by_rss(X_test, X_train, y_train, y_test, rss):
     while change_rss:
         change_rss = False
         dropped_column = None
-        print(len(X_test.columns))
         for col in X_test.columns:
             X_te = X_test.drop(col, axis=1)
             X_tr = X_train.drop(col, axis=1)
@@ -50,11 +49,11 @@ def evaluate_by_rss(X_test, X_train, y_train, y_test, rss):
             print("Rss:", rss)
 
 
-df = pd.read_csv('data_multiple_regression_exercice.csv', sep=' ')
+df = pd.read_csv('../datasets/data_multiple_regression_exercice.csv', sep=' ')
 X = df.drop('weight', axis=1)
 y = df['weight']
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.5, random_state=42)
+    X, y, test_size=0.9, random_state=42)
 
 lm = linear_model.LinearRegression()
 model = lm.fit(X_train, y_train)

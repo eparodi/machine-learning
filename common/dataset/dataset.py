@@ -21,7 +21,7 @@ class Dataset:
         self.clazz_attr_values=clazz_attr_values
 
     @staticmethod
-    def build_dataset_from_path(clazz_attr, dataset_path, dataset_type, sep=",", blacklisted_attrs=(), attr_generators=(), remove_nan=False):
+    def build_dataset_from_path(clazz_attr, dataset_path, dataset_type, sep=",", blacklisted_attrs=(), attr_generators=(), remove_nan=False, normalize=False):
         orig_rows = Dataset.loadRows(dataset_path, dataset_type, sep)
         blacklisted_attrs = Dataset.loadBlacklists(blacklisted_attrs)
         attr_generators = attr_generators
@@ -34,6 +34,8 @@ class Dataset:
         clazz_attr_values = Dataset.loadAttrValues(rows, clazz_attr)
         if remove_nan:
             rows = rows.dropna()
+        if normalize:
+            rows = Dataset.normalize_data(rows)
         return Dataset(clazz_attr=clazz_attr, rows=rows, attributes=attributes, clazz_attr_values=clazz_attr_values)
 
     @staticmethod
@@ -84,6 +86,13 @@ class Dataset:
 
     def getClassAttrValues(self):
         return self.clazz_attr_values
+
+    @staticmethod
+    def normalize_data(rows):
+        for col in rows.columns:
+            rows[col] -= rows[col].min()
+            rows[col] /= rows[col].max()
+        return rows
 
     # def get_numeric_to_categoric(self):
     #     return self.numericToCategoric

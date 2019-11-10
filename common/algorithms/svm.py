@@ -19,7 +19,6 @@ class SVM(Algorithm):
 
     def evaluate(self, values_dict):
         array = []
-        del values_dict["_2"]
         for value in values_dict.values():
             array.append(value)
         return self.svclassifier.predict([array])
