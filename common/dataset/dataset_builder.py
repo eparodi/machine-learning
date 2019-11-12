@@ -120,7 +120,7 @@ def create_linearly_separable_dataset(n=20, height=100, width=100, center=0.2):
     df = pd.DataFrame(row_list, columns=["tag", "x", "y", "color"])
     return Dataset.build_dataset_from_rows(rows=df, clazz_attr="tag", blacklisted_attrs="color")
 
-def create_heart_dataset():
-    blacklistedAttrs = ["tvdlm"]
+def create_heart_dataset(blacklisted=[]):
+    blacklistedAttrs = ["tvdlm"] + blacklisted
     return Dataset.build_dataset_from_path("sigdz", blacklisted_attrs=blacklistedAttrs,
         dataset_path="acath.xls", dataset_type=Dataset.Type.EXCEL, remove_nan=True, normalize=True)
