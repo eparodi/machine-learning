@@ -95,8 +95,9 @@ def create_journalist_dataset():
                 texts.append(text)
 
     df = pd.DataFrame(texts, columns=texts[0].keys())
-    normalize_attrs = ["average_sentence_length",
-                       "vocabulary_extension", "mente_adverbs", "coordinant_numbers"]
+    normalize_attrs = list(df.columns)
+    normalize_attrs.remove("journalist")
+    normalize_attrs.remove("text")
     for attr in normalize_attrs:
         df[attr] -= df[attr].min()
         df[attr] /= df[attr].max()

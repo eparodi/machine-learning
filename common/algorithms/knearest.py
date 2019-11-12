@@ -21,7 +21,6 @@ class KNearest(Algorithm):
         self.dataset = dataset
         self.columns = dataset.attributes
         self.data_frame = dataset.getRows().copy()
-        self.data_frame = self.data_frame.drop(classAttribute, axis=1)
         self.assign_init_classes()
         changes = True
         while changes:

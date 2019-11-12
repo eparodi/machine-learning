@@ -61,6 +61,8 @@ class HierarchicalClustering(Algorithm):
     SINGLE_LINK = "single_link"
     MEAN = "mean"
     CENTROID = "centroid"
+
+    METHODS = [COMPLETE_LINK, SINGLE_LINK, MEAN, CENTROID]
     distances = {
         COMPLETE_LINK : complete_link,
         SINGLE_LINK: single_link,
