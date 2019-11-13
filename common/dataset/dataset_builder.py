@@ -120,7 +120,28 @@ def create_linearly_separable_dataset(n=20, height=100, width=100, center=0.2):
     df = pd.DataFrame(row_list, columns=["tag", "x", "y", "color"])
     return Dataset.build_dataset_from_rows(rows=df, clazz_attr="tag", blacklisted_attrs="color")
 
+def create_clustered_dataset(clusters=4, cluster_size=0.2, size=1, points_per_cluster=20):
+    colors = ["r", "g", "b", "y", "brown"]
+    row_list = []
+    for cluster_id in range(0, clusters):
+        cluster_x = random.uniform(0, size)
+        cluster_y = random.uniform(0, size)
+        for x in range(0, points_per_cluster):
+            data = {}
+            data["x"] = clamp(random.uniform(cluster_x - cluster_size/2, cluster_x + cluster_size/2),0, size)
+            data["y"] = clamp(random.uniform(cluster_y - cluster_size/2, cluster_y + cluster_size/2),0, size)
+            # data["tag"] = cluster_id
+            data["color"] = colors[cluster_id]
+            row_list.append(data)
+
+    df = pd.DataFrame(row_list, columns=["x", "y", "color"])
+    return Dataset.build_dataset_from_rows(rows=df, clazz_attr="color")
+
+def clamp(n, smallest, largest):
+    return max(smallest, min(n, largest))
+
 def create_heart_dataset():
-    blacklistedAttrs = ["tvdlm"]
+    blacklistedAttrs = ["tvdlm", "cad.dur"]
+    gen = [("cad.dur", lambda r: r["duration"].apply(lambda x: bucketed_age(x)))]
     return Dataset.build_dataset_from_path("sigdz", blacklisted_attrs=blacklistedAttrs,
         dataset_path="acath.xls", dataset_type=Dataset.Type.EXCEL, remove_nan=True, normalize=True)

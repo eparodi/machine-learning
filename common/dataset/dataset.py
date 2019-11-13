@@ -45,11 +45,12 @@ class Dataset:
     @staticmethod
     def build_dataset_from_rows(clazz_attr, rows, blacklisted_attrs=()):
         blacklisted_attrs = Dataset.loadBlacklists(blacklisted_attrs)
+        filteredRows = Dataset.loadFilteredRows(rows, blacklisted_attrs)
         all_attributes = list(rows)
         attributes_with_clazz = Dataset.loadFilteredAttrs(all_attributes, blacklisted_attrs)
         attributes = [x for x in attributes_with_clazz if x != clazz_attr]
         clazz_attr_values = Dataset.loadAttrValues(rows, clazz_attr)
-        return Dataset(clazz_attr=clazz_attr, rows=rows, attributes=attributes, clazz_attr_values=clazz_attr_values)
+        return Dataset(clazz_attr=clazz_attr, rows=filteredRows, attributes=attributes, clazz_attr_values=clazz_attr_values)
 
     def build_random_sample_dataset(self, frac, replace=True):
         sampled_rows = self.getRows().sample(frac=frac, replace=replace)
