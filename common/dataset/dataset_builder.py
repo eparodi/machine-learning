@@ -120,6 +120,11 @@ def create_linearly_separable_dataset(n=20, height=100, width=100, center=0.2):
     df = pd.DataFrame(row_list, columns=["tag", "x", "y", "color"])
     return Dataset.build_dataset_from_rows(rows=df, clazz_attr="tag", blacklisted_attrs="color")
 
+def create_heart_dataset(blacklisted=[]):
+    blacklistedAttrs = ["tvdlm"] + blacklisted
+    return Dataset.build_dataset_from_path("sigdz", blacklisted_attrs=blacklistedAttrs,
+        dataset_path="acath.xls", dataset_type=Dataset.Type.EXCEL, remove_nan=True, normalize=True)
+
 def create_clustered_dataset(clusters=4, cluster_size=0.2, size=1, points_per_cluster=20):
     colors = ["r", "g", "b", "y", "brown"]
     row_list = []
@@ -139,9 +144,3 @@ def create_clustered_dataset(clusters=4, cluster_size=0.2, size=1, points_per_cl
 
 def clamp(n, smallest, largest):
     return max(smallest, min(n, largest))
-
-def create_heart_dataset():
-    blacklistedAttrs = ["tvdlm", "cad.dur"]
-    gen = [("cad.dur", lambda r: r["duration"].apply(lambda x: bucketed_age(x)))]
-    return Dataset.build_dataset_from_path("sigdz", blacklisted_attrs=blacklistedAttrs,
-        dataset_path="acath.xls", dataset_type=Dataset.Type.EXCEL, remove_nan=True, normalize=True)
