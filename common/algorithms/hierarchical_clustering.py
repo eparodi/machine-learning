@@ -62,7 +62,12 @@ class HierarchicalClustering(Algorithm):
     MEAN = "mean"
     CENTROID = "centroid"
 
-    METHODS = [COMPLETE_LINK, SINGLE_LINK, MEAN, CENTROID]
+    METHODS = [
+        COMPLETE_LINK,
+        SINGLE_LINK,
+        MEAN,
+        CENTROID
+    ]
     distances = {
         COMPLETE_LINK : complete_link,
         SINGLE_LINK: single_link,
@@ -70,17 +75,18 @@ class HierarchicalClustering(Algorithm):
         CENTROID: centroid_distance,
     }
 
-    def __init__(self, method):
+    def __init__(self, method, n=5):
         super().__init__()
         self.order = 0
         self.method = method
+        self.n = n
 
     def train(self, dataset: Dataset):
         self.dataset = dataset
         self.groups = []
         rows = dataset.getRows()
         self.create_initial_groups(rows)
-        while len(self.groups) != 1:
+        while len(self.groups) != self.n:
             self.reassign()
 
     def create_initial_groups(self, rows):
@@ -130,13 +136,13 @@ class HierarchicalClustering(Algorithm):
         return self.distances[self.method](data1, data2)
 
     def get_groups(self, n):
-        groups = self.groups
-        i = 1
+        groups = self.groups.copy()
+        i = len(groups)
         while i != n:
             order = 0
             next_group = None
             for group in groups:
-                if group["order"] > order:
+                if group["order"] >= order:
                     next_group = group
                     order = group["order"]
             groups = [group for group in groups if group["order"] != order]
@@ -144,8 +150,15 @@ class HierarchicalClustering(Algorithm):
             i += 1
         return groups
 
-    def evaluate(self):
-        raise Exception("Not valid!")
+    def evaluate(self, values_dict):
+        distance = np.inf
+        g = None
+        for group in self.groups:
+            dist = self.distances[self.method](group["data"], values_dict)
+            if distance > dist:
+                distance = dist
+                g = group
+        return group
 
     def get_tags(self):
         return {
