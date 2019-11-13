@@ -5,7 +5,7 @@ import re
 
 from common.dataset.dataset import Dataset
 
-dataset_folder_path = "./datasets/journalists"
+dataset_folder_path = "../datasets/journalists"
 
 def get_normalized_words(text):
     pattern = re.compile('[\W_]+')

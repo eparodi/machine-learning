@@ -18,15 +18,14 @@ pd.set_option('max_colwidth', -1)
 
 import common.dataset.dataset_builder as db
 
-dataset = db.create_clustered_dataset(clusters=4, points_per_cluster=50, cluster_size=0.1)
+dataset = db.create_clustered_dataset(clusters=4, points_per_cluster=25, cluster_size=0.1)
 
 alg = Kohonen(rounds=50, n=15, distance_weight=0.5, iteration_weight=0.5)
 alg.train(dataset)
-nodes = alg.get_nodes()
-print(nodes)
 
-flat_nodes = [item for sublist in nodes for item in sublist]
-nodes_df = pd.DataFrame(flat_nodes, columns=["NODE_X", "NODE_Y", "x", "y", "NODE_CLASS"])
+nodes_df = alg.get_nodes_df()
+print(nodes_df)
+
 df = dataset.getRows()
 ax = plt.gca()
 df.plot(kind='scatter',x='x',y="y",s=5, color=dataset.getRows()["color"], ax=ax)

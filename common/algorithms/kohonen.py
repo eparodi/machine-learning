@@ -26,7 +26,8 @@ class Kohonen(Algorithm):
     def train(self, dataset: Dataset):
         self.attributes = dataset.getAttributes()
         self.classAttribute = dataset.getClassAttr()
-        self.rows = dataset.getRows()
+        rows = dataset.getRows()
+        self.nodes = []
 
         for x in range(0, self.n):
             node_row = []
@@ -41,7 +42,7 @@ class Kohonen(Algorithm):
 
         iteration = 0
         for round in range(0, self.rounds):
-            shuffled_rows = self.rows.sample(frac=1)
+            shuffled_rows = rows.sample(frac=1)
             for row in shuffled_rows.itertuples(index=False):
                 rowDict = row._asdict()
                 closest_node = self.closest_node_weight(rowDict)
@@ -53,7 +54,7 @@ class Kohonen(Algorithm):
         for x in range(0, self.n):
             for y in range(0, self.n):
                 node = self.nodes[x][y]
-                closest_class = self.closest_class_to_node(node, self.rows)
+                closest_class = self.closest_class_to_node(node, rows)
                 node[self.NODE_CLASS] = closest_class
 
     def evaluate(self, values_dict):
@@ -78,8 +79,8 @@ class Kohonen(Algorithm):
     def closest_node_weight(self, row):
         closest = None
         closest_distance = float("inf")
-        for x in range(0, len(self.nodes)):
-            for y in range(0, len(self.nodes[x])):
+        for x in range(0, self.n):
+            for y in range(0, self.n):
                 node = self.nodes[x][y]
                 distance = 0
                 for attr in self.attributes:
@@ -136,5 +137,10 @@ class Kohonen(Algorithm):
 
     def get_nodes(self):
         return self.nodes
+
+    def get_nodes_df(self):
+        flat_nodes = [item for sublist in self.nodes for item in sublist]
+        nodes_df = pd.DataFrame(flat_nodes, columns=["NODE_X", "NODE_Y", "NODE_CLASS"] + self.attributes)
+        return nodes_df
 
 

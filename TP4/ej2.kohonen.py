@@ -7,6 +7,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 
 from common.algorithms.kohonen import Kohonen
+from common.experiment.experiment_comparer import Comparer, TestType
 
 sys.path.append(os.getcwd())
 
@@ -24,21 +25,11 @@ def get_journalists(data):
 
 dataset = create_journalist_dataset()
 
-alg = Kohonen(rounds=10, n=20, distance_weight=0.5, iteration_weight=0.5)
-alg.train(dataset)
-nodes_df = alg.get_nodes_df()
-print(nodes_df)
+algorithms = [Kohonen(rounds=rounds, n=n, distance_weight=0.5, iteration_weight=0.5)
+              for rounds in [2]
+              for n in [5, 10, 20]]
 
-nodes_df['color'] = nodes_df[Kohonen.NODE_CLASS].replace({
-    "Pagni": "blue",
-    "VanderKooy": "red",
-    "Calderaro": "green",
-    "Verbitsky": "yellow",
-    "Fonteveccia": "brown",
-})
+comparer = Comparer(dataset, 0.5, algorithms, rounds=10, test_type=TestType.DISJOINT)
 
-ax = plt.gca()
-nodes_df.plot(kind='scatter',x=Kohonen.NODE_X, y=Kohonen.NODE_Y,s=30, marker="*", color=nodes_df["color"], ax=ax)
-plt.show()
-# print(dataset)
+print(comparer)
 
