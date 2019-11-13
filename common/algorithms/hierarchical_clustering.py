@@ -62,7 +62,12 @@ class HierarchicalClustering(Algorithm):
     MEAN = "mean"
     CENTROID = "centroid"
 
-    METHODS = [COMPLETE_LINK, SINGLE_LINK, MEAN, CENTROID]
+    METHODS = [
+        COMPLETE_LINK,
+        SINGLE_LINK,
+        MEAN,
+        CENTROID
+    ]
     distances = {
         COMPLETE_LINK : complete_link,
         SINGLE_LINK: single_link,
@@ -130,13 +135,13 @@ class HierarchicalClustering(Algorithm):
         return self.distances[self.method](data1, data2)
 
     def get_groups(self, n):
-        groups = self.groups
+        groups = self.groups.copy()
         i = 1
         while i != n:
             order = 0
             next_group = None
             for group in groups:
-                if group["order"] > order:
+                if group["order"] >= order:
                     next_group = group
                     order = group["order"]
             groups = [group for group in groups if group["order"] != order]

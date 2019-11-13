@@ -68,7 +68,8 @@ def relative_frequency_of_most_n_used_words(text, n):
     appearance = appearance[0:n]
     return sum(appearance)
 
-def create_journalist_dataset():
+
+def create_journalist_dataset(blacklisted=[]):
     texts = []
     for folder in os.listdir(dataset_folder_path):
         folder_path = os.path.join(dataset_folder_path, folder)
@@ -84,6 +85,7 @@ def create_journalist_dataset():
                 text = {
                     "journalist": folder,
                     "text": text,
+                    "filename": files,
                     "average_sentence_length": average_sentence_length(text),
                     "vocabulary_extension": different_used_words(text),
                     "coordinant_numbers": coordinant_conjunctions_number(text),
@@ -95,10 +97,17 @@ def create_journalist_dataset():
                 texts.append(text)
 
     df = pd.DataFrame(texts, columns=texts[0].keys())
-    normalize_attrs = list(df.columns)
-    normalize_attrs.remove("journalist")
-    normalize_attrs.remove("text")
+    normalize_attrs = [
+        "average_sentence_length",
+        "vocabulary_extension",
+        "coordinant_numbers",
+        # "indeterminant",
+        # "determinant",``
+        "mente_adverbs",
+        # "most_used_words",
+    ]
     for attr in normalize_attrs:
         df[attr] -= df[attr].min()
         df[attr] /= df[attr].max()
-    return Dataset.build_dataset_from_rows(rows=df, clazz_attr="journalist", blacklisted_attrs="text")
+    return Dataset.build_dataset_from_rows(
+        rows=df, clazz_attr="journalist", blacklisted_attrs=["text", "filename"] + blacklisted)
