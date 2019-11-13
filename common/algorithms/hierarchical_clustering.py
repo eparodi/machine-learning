@@ -75,17 +75,18 @@ class HierarchicalClustering(Algorithm):
         CENTROID: centroid_distance,
     }
 
-    def __init__(self, method):
+    def __init__(self, method, n=5):
         super().__init__()
         self.order = 0
         self.method = method
+        self.n = n
 
     def train(self, dataset: Dataset):
         self.dataset = dataset
         self.groups = []
         rows = dataset.getRows()
         self.create_initial_groups(rows)
-        while len(self.groups) != 1:
+        while len(self.groups) != self.n:
             self.reassign()
 
     def create_initial_groups(self, rows):
@@ -136,7 +137,7 @@ class HierarchicalClustering(Algorithm):
 
     def get_groups(self, n):
         groups = self.groups.copy()
-        i = 1
+        i = len(groups)
         while i != n:
             order = 0
             next_group = None
@@ -149,8 +150,15 @@ class HierarchicalClustering(Algorithm):
             i += 1
         return groups
 
-    def evaluate(self):
-        raise Exception("Not valid!")
+    def evaluate(self, values_dict):
+        distance = np.inf
+        g = None
+        for group in self.groups:
+            dist = self.distances[self.method](group["data"], values_dict)
+            if distance > dist:
+                distance = dist
+                g = group
+        return group
 
     def get_tags(self):
         return {

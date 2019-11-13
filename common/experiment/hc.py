@@ -17,7 +17,7 @@ pd.set_option('max_colwidth', -1)
 dataset = db.create_clustered_dataset(
     clusters=5, points_per_cluster=20, cluster_size=0.1)
 
-alg = HierarchicalClustering(method=HierarchicalClustering.CENTROID)
+alg = HierarchicalClustering(method=HierarchicalClustering.CENTROID, n=5)
 alg.train(dataset)
 nodes = alg.get_groups(5)
 
